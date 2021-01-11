@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<p>
+		{%  for v in variences %}
+			{% if v == '<br>' %}
+				<br>
+			{% endif %}
+			{{ v }} <br>
+			}
+		{%  endfor %}
+	</p>
+	<a href="{% url 'panels-home' %}">Home</a>
+</body>
+</html>
