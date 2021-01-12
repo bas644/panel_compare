@@ -23,9 +23,14 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = '!_&-p1_1oxc9=ztmh0ydox@z52req^d$mo9m#lrb245dl-p_fo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+# DEBUG = True
 
 ALLOWED_HOSTS = ['srmda.pythonanywhere.com']
+<<<<<<< HEAD
+=======
+# ALLOWED_HOSTS = []
+>>>>>>> 289bbb7d116c685ecd187c7443790a1231e3f89f
 
 
 # Application definition

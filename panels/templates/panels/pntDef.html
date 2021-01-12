@@ -5,12 +5,14 @@
 </head>
 <body>
 	<p>
-		{%  for v in variences %}
-			{% if v == '<br>' %}
-				<br>
-			{% endif %}
-			{{ v }} <br>
-			}
+		{%  for k, v in variences.items %}
+			{{ k }} <br>
+			{% for i in v %}
+				{% if i == '<br>' %}
+					<br>
+				{% endif %}
+				{{ i }} <br>
+			{% endfor %}		
 		{%  endfor %}
 	</p>
 	<a href="{% url 'panels-home' %}">Home</a>
