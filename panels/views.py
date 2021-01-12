@@ -114,11 +114,16 @@ def pplr_compare(request):
 
 
 def pntDef_compare(request):
-	clnd_fl1 = []
-	clnd_fl2 = []
+	clnd_fl1 = {}
+	clnd_fl2 = {}
+	variences = {}
 	pnts = []
-	variences = []
-	for item in fl1:		
+	dkey = ''
+	for item in fl1:
+		if item == '':
+			continue
+		if item == ' ':
+			continue
 		if 'MD Anderson Cancer Center' in item:
 			continue
 		if 'Point Definition Report' in item:
@@ -135,14 +140,36 @@ def pntDef_compare(request):
 			continue
 		if 'Point Address:' in item:
 			continue
+		if item[-1] == "-":
+			continue
 		if '****' in item:
-			clnd_fl1.append(pnts)
+			for b in range(len(pnts)):
+				try:
+					pnts.remove('')
+				except:
+					pass
+				try:
+					pnts.remove(' ')
+				except:
+					pass
+			clnd_fl1[dkey] = pnts
+			dkey = ''
 			pnts = []
 			continue
+		if "\\n" in item:
+			item = item.replace('\\n', '', 1)
+		if 'Point System Name' in item:
+			dkey = item
+			continue
 		pnts.append(item)
+	
 	pnts = []
-
-	for item in fl2:		
+	dkey = ''
+	for item in fl2:
+		if item == '':
+			continue
+		if item == ' ':
+			continue
 		if 'MD Anderson Cancer Center' in item:
 			continue
 		if 'Point Definition Report' in item:
@@ -159,52 +186,59 @@ def pntDef_compare(request):
 			continue
 		if 'Point Address:' in item:
 			continue
+		if item[-1] == "-":
+			continue
 		if '****' in item:
-			clnd_fl2.append(pnts)
+			for b in range(len(pnts)):
+				try:
+					pnts.remove('')
+				except:
+					pass
+				try:
+					pnts.remove(' ')
+				except:
+					pass
+			clnd_fl2[dkey] = pnts
+			dkey = ''
 			pnts = []
+			continue
+		if "\\n" in item:
+			item = item.replace('\\n', '', 1)
+		if 'Point System Name' in item:
+			dkey = item
 			continue
 		pnts.append(item)
 
-	a = 0
-	if clnd_fl1 == clnd_fl2:
-		variences.append('All Points Defined The Same Between The Selected Files.')
-	elif len(clnd_fl1) <= len(clnd_fl2):
-		for pnt in range(len(clnd_fl1)):
-			if clnd_fl2[a] != clnd_fl1[a]:
-				b = 0
-				if len(clnd_fl2[a]) <= len(clnd_fl1[a]):
-					for i in range(len(clnd_fl2[a])):
-						if clnd_fl2[a][b] != clnd_fl1[a][b]:
-							variences.append(clnd_fl1[a][b])
-							variences.append(clnd_fl2[a][b])
-						b += 1
+	first = []
+	second = []
+	nomatch = []
+	
+	for ky1 in clnd_fl1.keys():
+		if ky1 not in clnd_fl2.keys():
+			first.append(ky1)
+	variences['1st file only'] = first
+	for ky2 in clnd_fl2.keys():
+		if ky2 not in clnd_fl1.keys():
+			second.append(ky2)
+	variences['2nd file only'] = second
+	for ky3 in clnd_fl1.keys():
+		if ky3 in clnd_fl2.keys():
+			if clnd_fl1[ky3] != clnd_fl2[ky3]:
+				pnt1 = ''
+				pnt2 = ''
+				v = 0
+				if (len(clnd_fl1[ky3])) == (len(clnd_fl2[ky3])):
+					for i in range(len(clnd_fl1[ky3])):
+						if clnd_fl2[ky3][v] != clnd_fl1[ky3][v]:
+							pnt1 = clnd_fl1[ky3][v]
+							pnt2 = clnd_fl2[ky3][v]
+							nomatch.append((ky3, pnt1, pnt2))
+							nomatch.append('<br>')
+						v += 1
 				else:
-					for i in range(len(clnd_fl1[a])):
-						if clnd_fl2[a][b] != clnd_fl1[a][b]:
-							variences.append(clnd_fl1[a][b])
-							variences.append(clnd_fl2[a][b])
-						b += 1
-				variences.append(clnd_fl2[a])
-				variences.append('<br>')
-			a += 1
-	elif len(clnd_fl2) < len(clnd_fl1):
-		for pnt in range(len(clnd_fl2)):
-			if clnd_fl2[a] != clnd_fl1[a]:				
-				b = 0
-				if len(clnd_fl2[a]) <= len(clnd_fl1[a]):
-					for i in range(len(clnd_fl2[a])):
-						if clnd_fl2[a][b] != clnd_fl1[a][b]:
-							variences.append(clnd_fl1[a][b])
-							variences.append(clnd_fl2[a][b])
-						b += 1
-				else:
-					for i in range(len(clnd_fl1[a])):
-						if clnd_fl2[a][b] != clnd_fl1[a][b]:
-							variences.append(clnd_fl1[a][b])
-							variences.append(clnd_fl2[a][b])
-						b += 1
-				variences.append(clnd_fl2[a])
-				variences.append('<br>')
-			a += 1
-	print(len(variences))
+					nomatch.append((ky3, clnd_fl1[ky3], clnd_fl2[ky3]))
+					nomatch.append('<br>')
+
+	variences["Files don't match"] = nomatch
+
 	return render(request, 'panels/pntDef.html', {'variences': variences})
