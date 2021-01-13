@@ -233,11 +233,9 @@ def pntDef_compare(request):
 							pnt1 = clnd_fl1[ky3][v]
 							pnt2 = clnd_fl2[ky3][v]
 							nomatch.append((ky3, pnt1, pnt2))
-							nomatch.append('<br>')
 						v += 1
 				else:
 					nomatch.append((ky3, clnd_fl1[ky3], clnd_fl2[ky3]))
-					nomatch.append('<br>')
 
 	variences["Files don't match"] = nomatch
 
