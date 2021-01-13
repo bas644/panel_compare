@@ -8,10 +8,10 @@
 		{%  for k, v in variences.items %}
 			{{ k }} <br>
 			{% for i in v %}
-				{% if i == '<br>' %}
-					<br>
-				{% endif %}
-				{{ i }} <br>
+				{% for h in i %}
+					{{ h }} <br>
+				{% endfor %}
+				<br>
 			{% endfor %}		
 		{%  endfor %}
 	</p>
