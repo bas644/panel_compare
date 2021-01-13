@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<p>
+		{%  for k, v in variences.items %}
+			{{ k }} <br>
+			{% for i in v %}
+				{% for h in i %}
+					{{ h }} <br>
+				{% endfor %}
+				<br>
+			{% endfor %}		
+		{%  endfor %}
+	</p>
+	<a href="{% url 'panels-home' %}">Home</a>
+</body>
+</html>
