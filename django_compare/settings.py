@@ -27,10 +27,7 @@ DEBUG = False
 # DEBUG = True
 
 ALLOWED_HOSTS = ['srmda.pythonanywhere.com']
-<<<<<<< HEAD
-=======
 # ALLOWED_HOSTS = []
->>>>>>> 289bbb7d116c685ecd187c7443790a1231e3f89f
 
 
 # Application definition
