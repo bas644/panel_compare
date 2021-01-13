@@ -29,6 +29,9 @@ def home(request):
 		if rptType == 'pntDef':
 			return redirect('panels-pntDef')
 
+		if rptType == 'trndDef':
+			return redirect('panels-trndDef')
+
 			
 	form = ReportForm()
 	return render(request, 'panels/home.html', {'form': form})
@@ -215,12 +218,14 @@ def pntDef_compare(request):
 	
 	for ky1 in clnd_fl1.keys():
 		if ky1 not in clnd_fl2.keys():
-			first.append(ky1)
-	variences['1st file only'] = first
+			first.append((ky1, clnd_fl1[ky1]))
+	if first:
+		variences['1st file only'] = first
 	for ky2 in clnd_fl2.keys():
 		if ky2 not in clnd_fl1.keys():
-			second.append(ky2)
-	variences['2nd file only'] = second
+			second.append((ky2, clnd_fl2[ky2]))
+	if second:
+		variences['2nd file only'] = second
 	for ky3 in clnd_fl1.keys():
 		if ky3 in clnd_fl2.keys():
 			if clnd_fl1[ky3] != clnd_fl2[ky3]:
@@ -240,3 +245,167 @@ def pntDef_compare(request):
 	variences["Files don't match"] = nomatch
 
 	return render(request, 'panels/pntDef.html', {'variences': variences})
+
+
+def trndDef_compare(request):
+	clnd_fl1 = {}
+	clnd_fl2 = {}
+	variences = {}
+	dfs = []
+	totdfs = []
+	dkey = ''
+	for item in fl1:
+		if 'MD Anderson Cancer Center' in item:
+			continue
+		if 'Trend Definition Report' in item:
+			continue
+		if 'Selection:' in  item:
+			continue
+		if 'Points)' in item:
+			continue
+		if '____' in item:
+			continue
+		if 'Supervised:' in item:
+			continue
+		if 'Revision Number:' in item:
+			continue
+		if 'Descriptor:' in item:
+			continue
+		if 'Last Collect' in item:
+			continue
+		if item[-1] == "-":
+			continue
+		if "\\n" in item:
+			item = item.replace('\\n', '', 1)
+		if 'Point Name:' in item:
+			if 'Trigger Point Name:' not in item:
+				dkey = item
+				continue
+		if 'Definition' in item:
+			if dfs:
+				for b in range(len(dfs)):
+					try:
+						dfs.remove('')
+					except:
+						pass
+					try:
+						dfs.remove(' ')
+					except:
+						pass
+				totdfs.append(dfs)
+				dfs = []
+			dfs.append(item)
+		if '****' in item:
+			for b in range(len(dfs)):
+				try:
+					dfs.remove('')
+				except:
+					pass
+				try:
+					dfs.remove(' ')
+				except:
+					pass
+			totdfs.append(dfs)
+			dfs = []
+			clnd_fl1[dkey] = totdfs
+			dkey = ''
+			totdfs = []
+			continue
+		dfs.append(item)
+
+	dfs = []
+	totdfs = []
+	dkey = ''
+	for item in fl2:
+		if 'MD Anderson Cancer Center' in item:
+			continue
+		if 'Trend Definition Report' in item:
+			continue
+		if 'Selection:' in  item:
+			continue
+		if 'Points)' in item:
+			continue
+		if '____' in item:
+			continue
+		if 'Supervised:' in item:
+			continue
+		if 'Revision Number:' in item:
+			continue
+		if 'Descriptor:' in item:
+			continue
+		if 'Last Collect' in item:
+			continue
+		if item[-1] == "-":
+			continue
+		if "\\n" in item:
+			item = item.replace('\\n', '', 1)
+		if 'Point Name:' in item:
+			if 'Trigger Point Name:' not in item:
+				dkey = item
+				continue
+		if 'Definition' in item:
+			if dfs:
+				for b in range(len(dfs)):
+					try:
+						dfs.remove('')
+					except:
+						pass
+					try:
+						dfs.remove(' ')
+					except:
+						pass
+				totdfs.append(dfs)
+				dfs = []
+			dfs.append(item)
+		if '****' in item:
+			for b in range(len(dfs)):
+				try:
+					dfs.remove('')
+				except:
+					pass
+				try:
+					dfs.remove(' ')
+				except:
+					pass
+			totdfs.append(dfs)
+			dfs = []
+			clnd_fl2[dkey] = totdfs
+			dkey = ''
+			totdfs = []
+			continue
+		dfs.append(item)
+
+	first = []
+	second = []
+	nomatch = []
+	
+	for ky1 in clnd_fl1.keys():
+		if ky1 not in clnd_fl2.keys():
+			first.append((ky1, clnd_fl1[ky1]))
+	if first:
+		variences['1st file only'] = first
+	for ky2 in clnd_fl2.keys():
+		if ky2 not in clnd_fl1.keys():
+			second.append((ky2, clnd_fl2[ky2]))
+	if second:
+		variences['2nd file only'] = second
+	for ky3 in clnd_fl1.keys():
+		if ky3 in clnd_fl2.keys():
+			if clnd_fl1[ky3] != clnd_fl2[ky3]:
+				pnt1 = ''
+				pnt2 = ''
+				v = 0
+				if (len(clnd_fl1[ky3])) == (len(clnd_fl2[ky3])):
+					for i in range(len(clnd_fl1[ky3])):
+						if clnd_fl2[ky3][v] != clnd_fl1[ky3][v]:
+							pnt1 = clnd_fl1[ky3][v]
+							pnt2 = clnd_fl2[ky3][v]
+							nomatch.append((ky3, pnt1, pnt2))
+						v += 1
+				else:
+					nomatch.append((ky3, clnd_fl1[ky3], clnd_fl2[ky3]))
+
+	variences["Files don't match"] = nomatch
+
+	return render(request, 'panels/trndDef.html', {'variences': variences})
+
