@@ -442,19 +442,18 @@ def ppcl_compare(request):
 			continue
 		if "\\n" in item:
 			item = item.replace('\\n', '', 1)
+		item.strip()
 		lines.append(item)	
 	for line in lines:
 		if len(line) > 4:
 			newlines.append(line)
 	lines = newlines
 	newlines = []
-	c = 0
 	for a in range(len(lines)):
 		if lines[a][0] == 'E' or lines[a][0] == 'D':
 			newlines.append(lines[a])
-			c += 1
 		else:
-			lines[c] = lines[c] + lines[a]
+			newlines[-1] = newlines[-1] + lines[a].strip()
 	lines = newlines
 	newlines = []
 	for line in lines:
@@ -500,19 +499,18 @@ def ppcl_compare(request):
 			continue
 		if "\\n" in item:
 			item = item.replace('\\n', '', 1)
+		item.strip()
 		lines.append(item)	
 	for line in lines:
 		if len(line) > 4:
 			newlines.append(line)
 	lines = newlines
 	newlines = []
-	c = 0
 	for a in range(len(lines)):
 		if lines[a][0] == 'E' or lines[a][0] == 'D':
 			newlines.append(lines[a])
-			c += 1
 		else:
-			lines[c] = lines[c] + lines[a]
+			newlines[-1] = newlines[-1] + lines[a].strip()
 	lines = newlines
 	newlines = []
 	for line in lines:
