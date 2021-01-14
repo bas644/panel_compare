@@ -32,6 +32,8 @@ def home(request):
 		if rptType == 'trndDef':
 			return redirect('panels-trndDef')
 
+		if rptType == 'ppcl':
+			return redirect('panels-ppcl')
 			
 	form = ReportForm()
 	return render(request, 'panels/home.html', {'form': form})
@@ -409,3 +411,147 @@ def trndDef_compare(request):
 
 	return render(request, 'panels/trndDef.html', {'variences': variences})
 
+
+
+def ppcl_compare(request):
+	clnd_fl1 = {}
+	clnd_fl2 = {}
+	variences = []
+
+	lines = []
+	newlines = []
+	dkey = ''
+	for item in fl1:
+		if 'MD Anderson Cancer Center' in item:
+			continue
+		if 'Panel PPCL Report' in item:
+			continue
+		if 'Panel Name:' in item:
+			continue
+		if 'Program Name:' in item:
+			continue
+		if 'Field Panels:' in item:
+			continue
+		if 'Programs:' in item:
+			continue
+		if 'Line Range:' in item:
+			continue
+		if '____' in item:
+			continue
+		if item[-1] == "-":
+			continue
+		if "\\n" in item:
+			item = item.replace('\\n', '', 1)
+		lines.append(item)	
+	for line in lines:
+		if len(line) > 4:
+			newlines.append(line)
+	lines = newlines
+	newlines = []
+	c = 0
+	for a in range(len(lines)):
+		if lines[a][0] == 'E' or lines[a][0] == 'D':
+			newlines.append(lines[a])
+			c += 1
+		else:
+			lines[c] = lines[c] + lines[a]
+	lines = newlines
+	newlines = []
+	for line in lines:
+		ind = False
+		newline = ''
+		for char in line:
+			try:
+				if int(char):
+					ind = True
+			except:
+				pass
+			if ind:
+				newline = newline + str(char)
+		newlines.append(newline)
+	lines = newlines
+	newlines = []
+	for line in lines:
+		line = line.split(' ',1)
+		dkey = line[0]
+		line[1] = line[1].strip()
+		clnd_fl1[dkey] = line[1]
+
+	lines = []
+	newlines = []
+	for item in fl2:
+		if 'MD Anderson Cancer Center' in item:
+			continue
+		if 'Panel PPCL Report' in item:
+			continue
+		if 'Panel Name:' in item:
+			continue
+		if 'Program Name:' in item:
+			continue
+		if 'Field Panels:' in item:
+			continue
+		if 'Programs:' in item:
+			continue
+		if 'Line Range:' in item:
+			continue
+		if '____' in item:
+			continue
+		if item[-1] == "-":
+			continue
+		if "\\n" in item:
+			item = item.replace('\\n', '', 1)
+		lines.append(item)	
+	for line in lines:
+		if len(line) > 4:
+			newlines.append(line)
+	lines = newlines
+	newlines = []
+	c = 0
+	for a in range(len(lines)):
+		if lines[a][0] == 'E' or lines[a][0] == 'D':
+			newlines.append(lines[a])
+			c += 1
+		else:
+			lines[c] = lines[c] + lines[a]
+	lines = newlines
+	newlines = []
+	for line in lines:
+		ind = False
+		newline = ''
+		for char in line:
+			try:
+				if int(char):
+					ind = True
+			except:
+				pass
+			if ind:
+				newline = newline + str(char)
+		newlines.append(newline)
+	lines = newlines
+	newlines = []
+	for line in lines:
+		line = line.split(' ',1)
+		dkey = line[0]
+		line[1] = line[1].strip()
+		clnd_fl2[dkey] = line[1]
+	
+	if clnd_fl1 == clnd_fl2:
+		variences.append('All code in selected files match')
+	else:
+		variences.append('Check the following lines for discrepancies')
+		for key in clnd_fl1.keys():
+			if key not in clnd_fl2.keys():
+				variences.append('The following line only appears in the first file')
+				variences.append(str(key) + '   ' + str(clnd_fl1[key]))
+		for key in clnd_fl2.keys():
+			if key not in clnd_fl1.keys():
+				variences.append('The following line only appears in the second file')
+				variences.append(str(key) + '   ' + str(clnd_fl2[key]))
+		for key in clnd_fl1.keys():
+			if key in clnd_fl2.keys():
+				if clnd_fl1[key] != clnd_fl2[key]:
+					variences.append('The follow lines do not match between the files')
+					variences.append(str(key) + '   ' + str(clnd_fl1[key]))
+					variences.append(str(key) + '   ' + str(clnd_fl2[key]))
+
+	return render(request, 'panels/ppcl.html', {'variences': variences})

@@ -7,4 +7,5 @@ urlpatterns = [
     path('pplr', views.pplr_compare, name='panels-pplr'),
     path('pntDef', views.pntDef_compare, name='panels-pntDef'),
     path('trndDef', views.trndDef_compare, name='panels-trndDef'),
+    path('ppcl', views.ppcl_compare, name='panels-ppcl'),
 ]
