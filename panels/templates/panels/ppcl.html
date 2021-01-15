@@ -2,14 +2,33 @@
 <html>
 <head>
 	<title></title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 </head>
 <body>
-	{% for line in variences %}
-		{{ line }} <br>		
-	{% endfor %}
+	<div class="container">
+		{% for line in variences %}
+			{% if line == "Check the following lines for discrepancies" %}
+				<h1 class="font-weight-bold">{{ line }}</h1>
+			{% else %}
+				{% if line == "All code in selected files match" %}
+					<h1 class="text-success">{{ line }}</h1>
+				{% else %}
+					{% if line == "The follow lines do not match between the files" %}
+						<h3 class="text-danger">{{ line }}</h3>
+					{% else %}
+						{% if "The following lines only" in line %}
+							<h3 class="text-warning">{{ line }}</h3>
+						{% else %}
+							<p>{{ line }}</p>
+						{% endif %}
+					{% endif %}
+				{% endif %}
+			{% endif %}
+		{% endfor %}
 	<br>
+	</div>
 	<a href="{% url 'panels-home' %}">Home</a>
 	
-
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 </body>
 </html>

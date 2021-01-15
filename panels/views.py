@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from .forms import ReportForm
+from django.http import HttpResponse
 
 fl1 = ''
 fl2 = ''
@@ -539,16 +540,19 @@ def ppcl_compare(request):
 		variences.append('Check the following lines for discrepancies')
 		for key in clnd_fl1.keys():
 			if key not in clnd_fl2.keys():
-				variences.append('The following line only appears in the first file')
+				if 'The following lines only appears in the first file' not in variences:
+					variences.append('The following lines only appears in the first file')
 				variences.append(str(key) + '   ' + str(clnd_fl1[key]))
 		for key in clnd_fl2.keys():
 			if key not in clnd_fl1.keys():
-				variences.append('The following line only appears in the second file')
+				if 'The following lines only appears in the second file' not in variences:
+					variences.append('The following lines only appears in the second file')
 				variences.append(str(key) + '   ' + str(clnd_fl2[key]))
 		for key in clnd_fl1.keys():
 			if key in clnd_fl2.keys():
 				if clnd_fl1[key] != clnd_fl2[key]:
-					variences.append('The follow lines do not match between the files')
+					if 'The follow lines do not match between the files' not in variences:
+						variences.append('The follow lines do not match between the files')
 					variences.append(str(key) + '   ' + str(clnd_fl1[key]))
 					variences.append(str(key) + '   ' + str(clnd_fl2[key]))
 
