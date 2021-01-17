@@ -24,10 +24,8 @@ SECRET_KEY = '!_&-p1_1oxc9=ztmh0ydox@z52req^d$mo9m#lrb245dl-p_fo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-# DEBUG = True
 
 ALLOWED_HOSTS = ['srmda.pythonanywhere.com']
-# ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -123,3 +121,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+try:
+    from .local_settings import *
+except ImportError:
+    print('No local_settings, you are on production')
