@@ -1,17 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
+{% extends "panels/base.html" %}
 
-	<h1>The Following POINTS Are Failed In The Second File:</h1>
-	
+{% block content %}
+	<h1>The Following POINTS Are Failed In The Second File:</h1>	
 	<p>
 		{%  for v in variences %}
 			{{ v }} <br>
 		{%  endfor %}
 	</p>
-	<a href="{% url 'panels-home' %}">Home</a>
-</body>
-</html>
+{% endblock content %}

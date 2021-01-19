@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
+{% extends "panels/base.html" %}
+
+{% block content %}
 	<p>
 		{%  for k, v in variences.items %}
 			{{ k }} <br>
@@ -15,6 +12,4 @@
 			{% endfor %}		
 		{%  endfor %}
 	</p>
-	<a href="{% url 'panels-home' %}">Home</a>
-</body>
-</html>
+{% endblock content %}

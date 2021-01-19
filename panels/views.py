@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from .forms import ReportForm
-from django.http import HttpResponse
 
 fl1 = ''
 fl2 = ''
@@ -409,6 +408,8 @@ def trndDef_compare(request):
 					nomatch.append((ky3, clnd_fl1[ky3], clnd_fl2[ky3]))
 
 	variences["Files don't match"] = nomatch
+	for i in variences.keys():
+		print(i)
 
 	return render(request, 'panels/trndDef.html', {'variences': variences})
 
