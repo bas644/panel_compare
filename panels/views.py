@@ -34,6 +34,9 @@ def home(request):
 
 		if rptType == 'ppcl':
 			return redirect('panels-ppcl')
+
+		if rptType == 'pntSrtr':
+			return redirect('panels-pntSrtr')
 			
 	form = ReportForm()
 	return render(request, 'panels/home.html', {'form': form})
@@ -407,9 +410,7 @@ def trndDef_compare(request):
 				else:
 					nomatch.append((ky3, clnd_fl1[ky3], clnd_fl2[ky3]))
 
-	variences["Files don't match"] = nomatch
-	for i in variences.keys():
-		print(i)
+	variences["Files don't match"] = nomatch		
 
 	return render(request, 'panels/trndDef.html', {'variences': variences})
 
@@ -558,3 +559,141 @@ def ppcl_compare(request):
 					variences.append(str(key) + '   ' + str(clnd_fl2[key]))
 
 	return render(request, 'panels/ppcl.html', {'variences': variences})
+
+
+def findIt(numOne, numTwo):
+    var = []
+    p1Key = []
+    p2Key = []
+
+    for p1Name in numOne:
+        key = list(p1Name.keys())
+        key = key[0]
+        p1Key.append(key)
+    for p2Name in numTwo:
+        key = list(p2Name.keys())
+        key = key[0]
+        p2Key.append(key)
+
+    for k in p1Key:
+        if k not in p2Key:
+            var.append('Point is in First file only:   ' + k)
+
+    for k in p2Key:
+        if k not in p1Key:
+            var.append('Point is in Second file only:   ' + k)
+
+    var.append('These points have non-matching attributes:')
+    
+    for p1Name in numOne:
+        key = list(p1Name.keys())
+        key = key[0]
+        for p2Name in numTwo:
+            if key in p2Name:
+                if p1Name[key] == p2Name[key]:
+                    var.append(key + ': matches')
+                else:
+                	att1s = []
+                	att2s = []
+
+                	att = list(p1Name[key].keys())
+                	att1s.append(att)
+                	att1s = att1s[0]
+
+                	att = list(p2Name[key].keys())
+                	att2s.append(att)
+                	att2s = att2s[0]
+
+                	for i in att1s:
+                		if i not in att2s:
+                			var.append(key + ': ' + i + ' only in first file')
+                	for i in att2s:
+                		if i not in att1s:
+                			var.append(key + ': ' + i + ' only in second file')
+
+                	for i in att1s:
+                		if 'Panel Name' in i or 'Point Address' in i:
+                			continue
+                		if i in att2s:
+                			if p1Name[key][i] != p2Name[key][i]:
+                				var.append(key + '---> ' +  i + ' First File ' + str(p1Name[key][i]) + ' Second File ' + str(p2Name[key][i]))
+                                                            
+    return(var)      
+
+
+def pntSrtr_compare(request):
+	variences = []
+	clnd_fl1 = []
+	clnd_fl2 = []
+	lines = []
+	info = {}
+	totalInfo = {}
+	pnts = []
+	pnt = ''
+
+	for item in fl1:
+		if '\\n' in item:
+			if len(lines) > 0:
+				lines = lines[0].split(',')
+				pnts.append(lines)
+			lines = []
+			item = item.replace('\\n', '', 1)
+			item = item.replace('"', '')
+		if item == "b'":
+			continue
+		if 'End of Report' in item:
+			continue
+		lines.append(item)
+
+	for p in range(1, len(pnts)):
+		for i in range(len(pnts[0])):
+			if pnts[0][i] == 'Name':
+				pnt = pnts[p][i]
+			info[pnts[0][i]] = pnts[p][i]
+		totalInfo[pnt] = info
+		clnd_fl1.append(totalInfo)
+		info = {}
+		pnt = ''
+		totalInfo = {}
+
+	lines = []
+	info = {}
+	totalInfo = {}
+	pnts = []
+	pnt = ''
+
+	for item in fl2:
+		if '\\n' in item:
+			if len(lines) > 0:
+				lines = lines[0].split(',')
+				pnts.append(lines)
+			lines = []
+			item = item.replace('\\n', '', 1)
+			item = item.replace('"', '')
+		if item == "b'":
+			continue
+		if 'End of Report' in item:
+			continue
+		lines.append(item)
+
+	for p in range(1, len(pnts)):
+		for i in range(len(pnts[0])):
+			if pnts[0][i] == 'Name':
+				pnt = pnts[p][i]
+			info[pnts[0][i]] = pnts[p][i]
+		totalInfo[pnt] = info
+		clnd_fl2.append(totalInfo)
+		info = {}
+		pnt = ''
+		totalInfo = {}
+
+	variences = findIt(clnd_fl1, clnd_fl2)
+	return render(request, 'panels/pntSrtr.html', {'variences': variences})
+
+
+
+              
+
+
+
+

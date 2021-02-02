@@ -1,0 +1,9 @@
+{% extends "panels/base.html" %}
+
+{% block content %}
+	<p>
+		{%  for v in variences %}
+			{{ v }} <br>		
+		{%  endfor %}
+	</p>
+{% endblock content %}
