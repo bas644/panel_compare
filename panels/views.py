@@ -508,7 +508,7 @@ def ppcl_compare(request):
 		if len(line) > 4:
 			newlines.append(line)
 	lines = newlines
-	newlines = []
+	newlines = ['']
 	for a in range(len(lines)):
 		if lines[a][0] == 'E' or lines[a][0] == 'D':
 			newlines.append(lines[a])
@@ -533,8 +533,9 @@ def ppcl_compare(request):
 	for line in lines:
 		line = line.split(' ',1)
 		dkey = line[0]
-		line[1] = line[1].strip()
-		clnd_fl2[dkey] = line[1]
+		if len(line) > 1:
+			line[1] = line[1].strip()
+			clnd_fl2[dkey] = line[1]
 	
 	if clnd_fl1 == clnd_fl2:
 		variences.append('All code in selected files match')
