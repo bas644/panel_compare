@@ -37,6 +37,9 @@ def home(request):
 
 		if rptType == 'pntSrtr':
 			return redirect('panels-pntSrtr')
+
+		if rptType == 'P2BpntDef':
+			return redirect('panels-P2BpntDef')
 			
 	form = ReportForm()
 	return render(request, 'panels/home.html', {'form': form})
@@ -692,7 +695,193 @@ def pntSrtr_compare(request):
 	return render(request, 'panels/pntSrtr.html', {'variences': variences})
 
 
+def P2BpntDef_compare(request):
+	clnd_fl1 = {}
+	clnd_fl2 = {}
+	variences = {}
+	pnts = []
+	dkey = ''
+	for item in fl1:
+		if item == '':
+			continue
+		if item == ' ':
+			continue
+		if 'MD Anderson Cancer Center' in item:
+			continue
+		if 'Point Definition Report' in item:
+			continue
+		if 'Selection:' in  item:
+			continue
+		if 'Points)' in item:
+			continue
+		if '____' in item:
+			continue
+		if 'Revision Number:' in item:
+			continue
+		if 'Panel Name:' in item:
+			continue
+		if 'Object Name:' in item:
+			continue
+		if 'Object ID:' in item:
+			continue
+		if 'Point Address:' in item:
+			continue
+		if 'Alarm Count' in item:
+			continue
+		if 'Normal ack Enabled:' in item:
+			continue
+		if 'Print Info with Alarm:' in item:
+			continue
+		if 'Mode Point:' in item:
+			continue
+		if 'Mode Delay' in item:
+			continue
+		if 'Default Destination' in item:
+			continue
+		if 'Alarm Mode:' in item:
+			continue
+		if 'Offset     Alarm Priority' in item:
+			continue
+		if 'N/A               3' in item:
+			continue
+		if 'Notification Class:' in item:
+			continue
+		if 'Annunciate To' in item:
+			continue
+		if item[-1] == "-":
+			continue
+		if '****' in item:
+			for b in range(len(pnts)):
+				try:
+					pnts.remove('')
+				except:
+					pass
+				try:
+					pnts.remove(' ')
+				except:
+					pass
+			clnd_fl1[dkey] = pnts
+			dkey = ''
+			pnts = []
+			continue
+		if "\\n" in item:
+			item = item.replace('\\n', '', 1)
+		if 'Point System Name' in item:
+			dkey = item
+			continue
+		if 'Relinquish Default:' in item:
+			pnts.insert(-1, item)
+			continue
+		pnts.append(item)
+	
+	pnts = []
+	dkey = ''
+	for item in fl2:
+		if item == '':
+			continue
+		if item == ' ':
+			continue
+		if 'MD Anderson Cancer Center' in item:
+			continue
+		if 'Point Definition Report' in item:
+			continue
+		if 'Selection:' in  item:
+			continue
+		if 'Points)' in item:
+			continue
+		if '____' in item:
+			continue
+		if 'Revision Number:' in item:
+			continue
+		if 'Panel Name:' in item:
+			continue
+		if 'Object Name:' in item:
+			continue
+		if 'Object ID:' in item:
+			continue
+		if 'Point Address:' in item:
+			continue
+		if 'Alarm Count' in item:
+			continue
+		if 'Normal ack Enabled:' in item:
+			continue
+		if 'Print Info with Alarm:' in item:
+			continue
+		if 'Mode Point:' in item:
+			continue
+		if 'Mode Delay' in item:
+			continue
+		if 'Default Destination' in item:
+			continue
+		if 'Alarm Mode:' in item:
+			continue
+		if 'Offset     Alarm Priority' in item:
+			continue
+		if 'N/A               3' in item:
+			continue
+		if 'Notification Class:' in item:
+			continue
+		if 'Annunciate To' in item:
+			continue
+		if item[-1] == "-":
+			continue
+		if '****' in item:
+			for b in range(len(pnts)):
+				try:
+					pnts.remove('')
+				except:
+					pass
+				try:
+					pnts.remove(' ')
+				except:
+					pass
+			clnd_fl2[dkey] = pnts
+			dkey = ''
+			pnts = []
+			continue
+		if "\\n" in item:
+			item = item.replace('\\n', '', 1)
+		if 'Point System Name' in item:
+			dkey = item
+			continue
+		if 'Relinquish Default:' in item:
+			pnts.insert(-1, item)
+			continue
+		pnts.append(item)
 
+	first = []
+	second = []
+	nomatch = []
+	
+	for ky1 in clnd_fl1.keys():
+		if ky1 not in clnd_fl2.keys():
+			first.append((ky1, clnd_fl1[ky1]))
+	if first:
+		variences['1st file only'] = first
+	for ky2 in clnd_fl2.keys():
+		if ky2 not in clnd_fl1.keys():
+			second.append((ky2, clnd_fl2[ky2]))
+	if second:
+		variences['2nd file only'] = second
+	for ky3 in clnd_fl1.keys():
+		if ky3 in clnd_fl2.keys():
+			if clnd_fl1[ky3] != clnd_fl2[ky3]:
+				pnt1 = ''
+				pnt2 = ''
+				v = 0
+				if (len(clnd_fl1[ky3])) == (len(clnd_fl2[ky3])):
+					for i in range(len(clnd_fl1[ky3])):
+						if clnd_fl2[ky3][v] != clnd_fl1[ky3][v]:
+							pnt1 = clnd_fl1[ky3][v]
+							pnt2 = clnd_fl2[ky3][v]
+							nomatch.append((ky3, pnt1, pnt2))
+						v += 1
+				else:
+					nomatch.append((ky3, clnd_fl1[ky3], clnd_fl2[ky3]))
+
+	variences["Files don't match"] = nomatch
+
+	return render(request, 'panels/pntDef.html', {'variences': variences})
               
 
 

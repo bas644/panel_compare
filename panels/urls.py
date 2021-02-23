@@ -9,4 +9,5 @@ urlpatterns = [
     path('trndDef', views.trndDef_compare, name='panels-trndDef'),
     path('ppcl', views.ppcl_compare, name='panels-ppcl'),
     path('pntSrtr', views.pntSrtr_compare, name='panels-pntSrtr'),
+    path('P2BpntDef', views.P2BpntDef_compare, name='panels-P2BpntDef'),
 ]
